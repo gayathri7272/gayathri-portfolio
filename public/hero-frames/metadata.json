@@ -1,0 +1,12 @@
+{
+  "source_video": "Developer_student_animating_port…_20260930191637.mp4",
+  "source_resolution": "1280x720",
+  "source_fps": 24.0,
+  "duration_seconds": 10.0,
+  "extracted_fps": 12,
+  "frame_count": 120,
+  "format": "WebP (RGBA)",
+  "quality": 80,
+  "processing": "Wall removed (transparent background), cropped to x:100-1280 y:60-720 (1180x660), regraded to the dark lavender palette",
+  "frame_size": "1180x660"
+}

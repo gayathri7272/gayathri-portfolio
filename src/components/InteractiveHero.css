@@ -1,0 +1,464 @@
+/* =========================================================
+   HERO — one cinematic scene.
+   Text lives in the left column; the character stage sits to the
+   right. They never share space, so nothing covers the laptop or face.
+   ========================================================= */
+
+.ih {
+  --stage-w: 64%; /* stage width, relative to the hero */
+  --stage-right: -3%; /* bleeds slightly past the edge (clipped by the hero) */
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: max(100svh, 640px);
+  padding: calc(var(--nav-h) + 24px) var(--gutter) 88px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Atmosphere: window glow behind the character + soft vignette. Blends into the next section. */
+.ih-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 62% at 72% 46%, rgba(150, 100, 235, 0.34), transparent 70%),
+    radial-gradient(30% 40% at 96% 18%, rgba(201, 155, 255, 0.2), transparent 70%),
+    radial-gradient(36% 46% at 4% 96%, rgba(120, 76, 205, 0.22), transparent 70%),
+    linear-gradient(to bottom, transparent 70%, var(--bg-1) 100%);
+}
+
+/* ---------- Text column ---------- */
+.ih-note {
+  position: relative;
+  z-index: 3;
+  width: min(100%, 42%);
+  min-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ih-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  padding: 7px 16px 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: rgba(185, 154, 245, 0.12);
+  color: var(--lav-50);
+  font-size: 0.85rem;
+  font-weight: 500;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.ih-badge svg {
+  color: var(--lav-200);
+}
+
+.ih-title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-head);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.ih-hi {
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ih-name {
+  font-size: clamp(2.3rem, 4.2vw, 3.9rem);
+  background: linear-gradient(100deg, #e8dcff 0%, #c8a7ff 45%, #a77de8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  white-space: nowrap;
+  padding-bottom: 0.08em; /* keeps descenders from being clipped by background-clip */
+}
+
+.ih-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 22px 0 0;
+  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+@media (min-width: 1280px) {
+  .ih-meta > span:first-child {
+    white-space: nowrap;
+  }
+}
+.ih-role {
+  color: var(--text-1);
+  font-weight: 500;
+}
+
+.ih-tagline {
+  margin: 26px 0 0;
+  font-family: var(--font-head);
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--lav-100);
+}
+.ih-tagline span {
+  display: inline-block;
+  padding-left: 1.4em;
+  color: var(--lav-200);
+}
+
+.ih-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.ih-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 26px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-3);
+}
+.ih-cursor {
+  color: var(--lav-200);
+  animation: ih-nudge 2.6s ease-in-out infinite;
+}
+.ih-hint-m {
+  display: none;
+}
+
+@keyframes ih-nudge {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, 3px);
+  }
+}
+
+/* ---------- Stage (canvas) ---------- */
+.ih-stage {
+  position: absolute;
+  z-index: 1;
+  right: var(--stage-right);
+  bottom: 0;
+  width: var(--stage-w);
+  aspect-ratio: 1180 / 660;
+  pointer-events: none; /* the hero listens for the cursor; only the canvas takes taps */
+}
+
+.ih-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: auto;
+  cursor: default;
+  /* Fade the left/right/bottom edges so the desk dissolves into the background — no frame, no box. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 18%, #000 88%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 18%, #000 88%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  filter: drop-shadow(0 18px 36px rgba(10, 4, 24, 0.45));
+}
+
+/* ---------- Speech bubble (frosted glass) ---------- */
+.ih-msg {
+  position: absolute;
+  z-index: 4;
+  top: 8%;
+  max-width: 220px;
+  padding: 10px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: rgba(36, 18, 62, 0.72);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+  box-shadow: 0 12px 32px rgba(6, 2, 14, 0.45), 0 0 24px -6px var(--glow);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px) scale(0.96);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+.ih-msg[data-show="1"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s;
+}
+.ih-msg[data-side="center"] {
+  left: 50%;
+  margin-left: -110px;
+  text-align: center;
+}
+.ih-msg[data-side="left"] {
+  left: 6%;
+}
+.ih-msg[data-side="right"] {
+  right: 6%;
+}
+.ih-msg.pop {
+  animation: ih-pop 0.38s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+@keyframes ih-pop {
+  from {
+    transform: translateY(8px) scale(0.85);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ---------- Floating glass chips (kept clear of face + laptop) ---------- */
+.ih-chip {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 14px 18px;
+  list-style: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+  box-shadow: 0 14px 34px rgba(6, 2, 14, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  animation: ih-float 7s ease-in-out infinite;
+}
+
+.ih-chip--note {
+  display: none;
+  left: 30%;
+  top: -12%;
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--lav-50);
+  transform: rotate(-6deg);
+  animation-delay: -2s;
+}
+
+.ih-chip--stack {
+  right: 5%;
+  top: 22%;
+  display: grid;
+  gap: 10px;
+  min-width: 128px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-1);
+}
+.ih-chip--stack li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ih-chip--stack li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lav-200);
+  box-shadow: 0 0 10px var(--accent-2);
+}
+
+@keyframes ih-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .ih-chip--note {
+    display: block;
+  }
+}
+
+/* ---------- Scroll cue ---------- */
+.ih-cue {
+  position: absolute;
+  z-index: 4;
+  left: var(--gutter);
+  bottom: 28px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: rgba(36, 18, 62, 0.6);
+  color: var(--lav-100);
+  box-shadow: 0 0 24px -4px var(--glow);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.ih-cue svg {
+  animation: ih-bob 2.2s ease-in-out infinite;
+}
+.ih-cue:hover {
+  transform: translateY(-3px);
+  background: rgba(60, 30, 100, 0.8);
+}
+@keyframes ih-bob {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* ---------- Laptop / small desktop ---------- */
+@media (max-width: 1200px) {
+  .ih {
+    --stage-w: 62%;
+  }
+  .ih-note {
+    width: 44%;
+  }
+  .ih-chip--stack {
+    right: 9%;
+  }
+}
+
+/* ---------- Tablet & mobile: stacked — text first, character below ---------- */
+@media (max-width: 960px) {
+  .ih {
+    --stage-w: 100%;
+    --stage-right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .ih-note {
+    width: 100%;
+    min-width: 0;
+    padding-top: 12px;
+  }
+  .ih-name {
+    white-space: normal;
+  }
+  /* stage returns to normal flow beneath the text */
+  .ih-stage {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: calc(100% + 2 * var(--gutter));
+    margin: 28px calc(-1 * var(--gutter)) 0;
+  }
+  .ih-cue {
+    display: none;
+  }
+  .ih-hint-d {
+    display: none;
+  }
+  .ih-hint-m {
+    display: inline;
+  }
+  .ih-chip--stack {
+    top: 10%;
+    right: 6%;
+    padding: 10px 14px;
+    gap: 7px;
+    min-width: 0;
+    font-size: 0.78rem;
+  }
+  .ih-msg {
+    top: 4%;
+  }
+}
+
+@media (max-width: 600px) {
+  /* frame has empty space on the right; crop in so she fills the phone screen */
+  .ih-stage {
+    width: 168%;
+    margin: 20px 0 0 -13%;
+  }
+  .ih-msg,
+  .ih-msg[data-side="center"],
+  .ih-msg[data-side="left"],
+  .ih-msg[data-side="right"] {
+    top: 1%;
+    left: 9%;
+    right: auto;
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+@media (max-width: 520px) {
+  .ih-actions {
+    flex-direction: column;
+    align-self: stretch;
+  }
+  .ih-actions .btn {
+    width: 100%;
+  }
+  .ih-chip--stack {
+    display: none;
+  }
+  .ih-msg {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    max-width: 150px;
+  }
+}
+
+@media (pointer: coarse) {
+  .ih-hint-d {
+    display: none;
+  }
+  .ih-hint-m {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ih-chip,
+  .ih-cursor,
+  .ih-cue svg,
+  .ih-msg.pop {
+    animation: none;
+  }
+  .ih-msg,
+  .ih-cue {
+    transition: none;
+  }
+}

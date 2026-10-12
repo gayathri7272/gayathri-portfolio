@@ -1,0 +1,99 @@
+/* Global sparkle layer: fixed, behind <main>, never interactive. */
+.sparkles {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sp {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  animation: sp-twinkle var(--dur) ease-in-out var(--delay) infinite;
+  will-change: opacity, transform;
+}
+
+/* soft halo */
+.sp::before {
+  content: "";
+  position: absolute;
+  inset: -90%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 167, 255, 0.5), transparent 68%);
+}
+
+/* the glyph itself */
+.sp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--lav-50), var(--lav-200));
+}
+
+/* ✦ four-point star */
+.sp--star::after {
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+}
+
+/* ✧ slimmer star */
+.sp--thin::after {
+  clip-path: polygon(50% 0, 56% 44%, 100% 50%, 56% 56%, 50% 100%, 44% 56%, 0 50%, 44% 44%);
+}
+
+/* • dot */
+.sp--dot::after {
+  border-radius: 50%;
+}
+.sp--dot::before {
+  inset: -140%;
+}
+
+/* a few slowly float */
+.sp--drift {
+  animation:
+    sp-twinkle var(--dur) ease-in-out var(--delay) infinite,
+    sp-drift calc(var(--dur) * 3.2) ease-in-out var(--delay) infinite alternate;
+}
+
+@keyframes sp-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.55) rotate(0deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1) rotate(18deg);
+  }
+}
+
+@keyframes sp-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 8px -22px;
+  }
+}
+
+/* Reduced motion: still, quiet dust — no animation. */
+@media (prefers-reduced-motion: reduce) {
+  .sp,
+  .sp--drift {
+    animation: none;
+    opacity: 0.3;
+    will-change: auto;
+  }
+}
+
+/* Phones: fewer, quieter sparkles */
+@media (max-width: 600px) {
+  .sp:nth-child(3n) {
+    display: none;
+  }
+}

@@ -1,0 +1,349 @@
+/* =========================================================
+   DESIGN SYSTEM — dark lavender
+   Fonts (Sora + DM Sans) are loaded in index.html.
+   Every component stylesheet reads from the tokens below.
+   ========================================================= */
+
+:root {
+  /* Deep backgrounds */
+  --bg-0: #12091f;
+  --bg-1: #180c2b;
+  --bg-2: #211039;
+  --bg-3: #291344;
+  --bg-4: #351953;
+
+  /* Lavender scale */
+  --lav-300: #b99af5;
+  --lav-200: #c8a7ff;
+  --lav-100: #dccbff;
+  --lav-50: #e8dcff;
+
+  /* Accent */
+  --accent-1: #a77de8;
+  --accent-2: #b88cff;
+  --accent-3: #c99bff;
+
+  /* Text */
+  --text: #ffffff;
+  --text-1: #f5f0ff;
+  --text-2: #d9d0eb;
+  --text-3: #bdb1d3;
+
+  /* Surfaces (glass) */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.075);
+  --surface-solid: rgba(33, 16, 57, 0.72);
+  --border: rgba(200, 167, 255, 0.16);
+  --border-strong: rgba(200, 167, 255, 0.34);
+
+  /* Glow + shadows */
+  --glow: rgba(167, 125, 232, 0.38);
+  --shadow-card: 0 18px 48px rgba(6, 2, 14, 0.42);
+  --shadow-hover: 0 22px 56px rgba(6, 2, 14, 0.5), 0 0 0 1px var(--border-strong), 0 0 36px -8px var(--glow);
+
+  /* Shape + spacing */
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 20px;
+  --section-pad: clamp(84px, 10vw, 128px);
+  --gutter: clamp(20px, 6vw, 72px);
+  --content-w: 1120px;
+  --nav-h: 72px;
+
+  /* Type */
+  --font-head: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 8px);
+  background: var(--bg-0);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-1);
+  background: var(--bg-0);
+}
+
+#root {
+  width: 100%;
+  overflow-x: clip; /* no horizontal scroll, without breaking position: sticky/fixed */
+}
+
+img,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(184, 140, 255, 0.4);
+  color: var(--text);
+}
+
+/* Keyboard focus — visible everywhere */
+:focus-visible {
+  outline: 2px solid var(--lav-200);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Skip link */
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 2000;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--lav-100);
+  color: var(--bg-1);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.2s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------- Page background (one continuous canvas) ---------- */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 50vmax at 12% 8%, rgba(167, 125, 232, 0.2), transparent 62%),
+    radial-gradient(55vmax 45vmax at 92% 30%, rgba(120, 76, 205, 0.18), transparent 60%),
+    radial-gradient(60vmax 50vmax at 30% 100%, rgba(185, 154, 245, 0.12), transparent 60%),
+    linear-gradient(165deg, var(--bg-0) 0%, var(--bg-1) 34%, var(--bg-2) 68%, var(--bg-3) 100%);
+}
+
+main {
+  position: relative;
+  z-index: 2; /* above the sparkle layer (z-index: 1) so text and faces are never covered */
+}
+
+/* ---------- Shared section primitives ---------- */
+.section {
+  position: relative;
+  padding: var(--section-pad) var(--gutter);
+}
+
+/* Soft, section-specific atmosphere. Each section sets --glow-a / --glow-b / positions. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(520px 380px at var(--ax, 12%) var(--ay, 20%), var(--glow-a, rgba(167, 125, 232, 0.14)), transparent 70%),
+    radial-gradient(560px 420px at var(--bx, 90%) var(--by, 80%), var(--glow-b, rgba(120, 76, 205, 0.12)), transparent 70%);
+}
+
+.section-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--content-w);
+  margin-inline: auto;
+}
+
+.section-heading {
+  margin-bottom: clamp(36px, 5vw, 56px);
+}
+.section-heading.centered {
+  text-align: center;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lav-200);
+}
+.section-label::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lav-200));
+}
+.section-heading.centered .section-label::after {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(270deg, transparent, var(--lav-200));
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: clamp(1.75rem, 3.4vw, 2.65rem);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.section-heading > p:not(.section-label) {
+  margin: 16px auto 0;
+  max-width: 600px;
+  line-height: 1.75;
+  color: var(--text-3);
+}
+.section-heading:not(.centered) > p:not(.section-label) {
+  margin-inline: 0;
+}
+
+/* Glass card base — reused by every section */
+.glass {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.glass:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-strong);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+  box-shadow: var(--shadow-hover), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 24px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+.btn svg {
+  flex: none;
+  transition: transform 0.25s ease;
+}
+.btn:hover {
+  transform: translateY(-3px);
+}
+.btn:active {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  color: #1a0b30;
+  background: linear-gradient(135deg, var(--lav-100) 0%, var(--accent-2) 55%, var(--accent-1) 100%);
+  box-shadow: 0 10px 26px -6px rgba(167, 125, 232, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.btn-primary:hover {
+  box-shadow: 0 16px 36px -6px rgba(184, 140, 255, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.btn-primary:hover svg {
+  transform: translateX(3px);
+}
+
+.btn-ghost {
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-strong);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(220, 203, 255, 0.55);
+  box-shadow: 0 12px 30px -8px rgba(167, 125, 232, 0.45);
+}
+
+.btn-sm {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  border-radius: 12px;
+}
+
+/* ---------- Small shared bits ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(185, 154, 245, 0.1);
+  color: var(--lav-100);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  :root {
+    --nav-h: 64px;
+  }
+  .btn {
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .glass,
+  .btn,
+  .btn svg {
+    transition: none;
+  }
+  .glass:hover,
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+}

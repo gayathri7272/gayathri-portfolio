@@ -1,0 +1,76 @@
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+
+.about-intro .section-heading {
+  margin-bottom: 24px;
+}
+
+.about-lead {
+  margin: 0;
+  max-width: 460px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-2);
+}
+
+.about-points {
+  display: grid;
+  gap: 18px;
+}
+
+.about-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 26px 28px;
+}
+
+.about-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: rgba(185, 154, 245, 0.12);
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--lav-100);
+}
+
+.about-card h3 {
+  margin: 2px 0 6px;
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.about-card p {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--text-3);
+}
+
+@media (max-width: 860px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-lead {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-card {
+    padding: 22px 20px;
+    gap: 16px;
+  }
+}
